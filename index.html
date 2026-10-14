@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Шпионы в лагере Тараса Бульбы</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Ruslan+Display&family=Neucha&family=Marck+Script&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #2a1810;
+    background-image:
+      radial-gradient(ellipse at 30% 70%, rgba(180,100,40,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 30%, rgba(100,60,20,0.3) 0%, transparent 50%),
+      repeating-linear-gradient(90deg, transparent, transparent 98px, rgba(60,30,10,0.4) 98px, rgba(60,30,10,0.4) 100px);
+    font-family: 'Neucha', cursive;
+    color: #f0e6d3;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header { text-align: center; padding: 15px 0; }
+
+  .header h1 {
+    font-family: 'Ruslan Display', cursive;
+    font-size: 2.2em;
+    color: #ffcc66;
+    text-shadow: 0 0 15px rgba(255,150,0,0.4), 2px 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 2px;
+  }
+
+  .header .subtitle {
+    font-family: 'Marck Script', cursive;
+    font-size: 1.3em;
+    color: #cc9966;
+    margin-top: 5px;
+  }
+
+  .task-box {
+    background: rgba(60,30,10,0.7);
+    border: 2px solid #8B6914;
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin: 15px auto;
+    max-width: 700px;
+    text-align: center;
+    font-size: 1.05em;
+    color: #ddc8a0;
+  }
+
+  .task-box strong { color: #ffcc66; }
+
+  .progress-bar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+  }
+
+  .progress-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #3E2723;
+    border: 2px solid #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75em;
+    color: #999;
+    transition: all 0.3s;
+  }
+
+  .progress-dot.done {
+    background: #2E7D32;
+    border-color: #4CAF50;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(76,175,80,0.4);
+  }
+
+  .progress-dot.spy-done {
+    background: #B71C1C;
+    border-color: #f44336;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(244,67,54,0.5);
+  }
+
+  .progress-dot.current {
+    border-color: #ffcc66;
+    box-shadow: 0 0 10px rgba(255,204,102,0.5);
+    color: #ffcc66;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(255,204,102,0.5); }
+    50% { box-shadow: 0 0 18px rgba(255,204,102,0.8); }
+  }
+
+  .score-display {
+    text-align: center;
+    font-family: 'Ruslan Display', cursive;
+    font-size: 1.1em;
+    color: #ffcc66;
+    margin: 8px 0 15px;
+  }
+
+  .game-section {
+    background: rgba(40,20,10,0.7);
+    border: 2px solid #8B6914;
+    border-radius: 14px;
+    padding: 25px 20px 30px;
+    margin: 15px 0;
+    position: relative;
+  }
+
+  .current-verb {
+    text-align: center;
+    font-family: 'Ruslan Display', cursive;
+    font-size: 2.4em;
+    color: #ffcc66;
+    margin-bottom: 5px;
+    text-shadow: 0 0 12px rgba(255,150,0,0.4);
+    letter-spacing: 3px;
+  }
+
+  .verb-hint {
+    text-align: center;
+    color: #aa8855;
+    font-size: 1em;
+    margin-bottom: 20px;
+  }
+
+  .main-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .participle-panel {
+    background: rgba(60,30,10,0.6);
+    border: 2px solid #8B6914;
+    border-radius: 10px;
+    padding: 15px;
+    min-width: 220px;
+    text-align: center;
+  }
+
+  .participle-panel h3 {
+    font-family: 'Ruslan Display', cursive;
+    color: #ffcc66;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+
+  .participle-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    min-height: 50px;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    border: 1px dashed #666;
+    margin-bottom: 10px;
+  }
+
+  .part-stem {
+    color: #f0e6d3;
+    font-weight: bold;
+    font-size: 1.3em;
+    text-transform: uppercase;
+  }
+
+  .part-suffix {
+    color: #ff6644;
+    font-weight: bold;
+    font-size: 1.3em;
+    text-transform: uppercase;
+  }
+
+  .part-ending {
+    color: #88ccff;
+    font-weight: bold;
+    font-size: 1.3em;
+  }
+
+  .participle-panel select {
+    background: #2a1a0e;
+    color: #ff6644;
+    border: 2px solid #ff6644;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: 'Neucha', cursive;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .participle-panel select:focus {
+    outline: none;
+    border-color: #ffaa44;
+    box-shadow: 0 0 8px rgba(255,170,68,0.4);
+  }
+
+  .participle-panel select.correct-select {
+    border-color: #4CAF50;
+    color: #4CAF50;
+  }
+
+  .participle-panel select.wrong-select {
+    border-color: #f44336;
+    color: #f44336;
+    animation: shake 0.5s;
+  }
+
+  .kozak-area {
+    position: relative;
+    width: 280px;
+    flex-shrink: 0;
+  }
+
+  .kozak-svg-wrap {
+    position: relative;
+    width: 280px;
+    height: 340px;
+    margin: 0 auto;
+  }
+
+  .kozak-svg-wrap svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+  }
+
+  .chest-selects {
+    position: absolute;
+    top: 130px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 160px;
+    z-index: 5;
+  }
+
+  .chest-selects select {
+    background: rgba(30,15,5,0.85);
+    color: #f0e6d3;
+    border: 2px solid #B8860B;
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-family: 'Neucha', cursive;
+    font-size: 0.95em;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+  }
+
+  .chest-selects select:focus {
+    outline: none;
+    border-color: #ffcc66;
+    box-shadow: 0 0 8px rgba(255,204,102,0.4);
+  }
+
+  .chest-selects select.correct-select {
+    border-color: #4CAF50;
+    background: rgba(30,60,20,0.85);
+  }
+
+  .chest-selects select.wrong-select {
+    border-color: #f44336;
+    background: rgba(60,20,20,0.85);
+    animation: shake 0.5s;
+  }
+
+  .kozak-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+  }
+
+  .kozak-inputs input {
+    background: rgba(0,0,0,0.4);
+    color: #f0e6d3;
+    border: 2px solid #8B6914;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: 'Neucha', cursive;
+    font-size: 1.1em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .kozak-inputs input.stem-input { width: 110px; }
+  .kozak-inputs input.ending-input { width: 70px; }
+
+  .kozak-inputs input:focus {
+    outline: none;
+    border-color: #ffcc66;
+    box-shadow: 0 0 8px rgba(255,204,102,0.3);
+  }
+
+  .kozak-inputs input.correct-input {
+    border-color: #4CAF50;
+    background: rgba(30,60,20,0.4);
+  }
+
+  .kozak-inputs input.wrong-input {
+    border-color: #f44336;
+    background: rgba(60,20,20,0.4);
+    animation: shake 0.5s;
+  }
+
+  .kozak-inputs .plus-sign {
+    color: #B8860B;
+    font-size: 1.3em;
+    font-weight: bold;
+  }
+
+  .kozak-inputs .auto-postfix {
+    color: #88ccff;
+    font-weight: bold;
+    font-size: 1em;
+    background: rgba(100,180,255,0.15);
+    padding: 5px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(100,180,255,0.4);
+    opacity: 0;
+    transition: opacity 0.4s;
+    text-transform: uppercase;
+  }
+
+  .kozak-inputs .auto-postfix.visible { opacity: 1; }
+
+  .input-label-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+
+  .input-label-row span {
+    font-size: 0.75em;
+    color: #887755;
+  }
+
+  .input-label-row .stem-label { width: 110px; text-align: center; }
+  .input-label-row .ending-label { width: 70px; text-align: center; }
+
+  .spy-button-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-top: 40px;
+  }
+
+  .spy-btn {
+    font-family: 'Ruslan Display', cursive;
+    font-size: 1.4em;
+    padding: 15px 25px;
+    background: linear-gradient(to bottom, #d32f2f, #8b0000);
+    color: #fff;
+    border: 3px solid #ff4444;
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255,0,0,0.5);
+    box-shadow: 0 0 20px rgba(255,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+    animation: spyPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes spyPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.3); }
+    50% { box-shadow: 0 0 30px rgba(255,0,0,0.6), inset 0 0 10px rgba(0,0,0,0.3); }
+  }
+
+  .spy-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 0 35px rgba(255,0,0,0.7);
+  }
+
+  .spy-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    animation: none;
+  }
+
+  .spy-btn-label {
+    font-size: 0.85em;
+    color: #ff8888;
+    text-align: center;
+    max-width: 150px;
+  }
+
+  .action-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Ruslan Display', cursive;
+    font-size: 1.1em;
+    padding: 10px 22px;
+    border: 2px solid #B8860B;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+  }
+
+  .btn-check {
+    background: linear-gradient(to bottom, #2E7D32, #1B5E20);
+    color: #a5d6a7;
+    border-color: #4CAF50;
+  }
+
+  .btn-check:hover:not(:disabled) {
+    background: linear-gradient(to bottom, #388E3C, #2E7D32);
+    box-shadow: 0 0 15px rgba(76,175,80,0.5);
+    transform: translateY(-2px);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .feedback {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 1.15em;
+    min-height: 30px;
+    transition: all 0.3s;
+  }
+
+  .feedback.success { color: #4CAF50; text-shadow: 0 0 10px rgba(76,175,80,0.5); }
+  .feedback.error { color: #f44336; }
+  .feedback.spy-caught {
+    color: #ff4444;
+    font-size: 1.3em;
+    text-shadow: 0 0 15px rgba(255,0,0,0.6);
+    font-family: 'Ruslan Display', cursive;
+    letter-spacing: 2px;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .kozak-svg-wrap.destroying svg {
+    animation: kozakDestroy 1.5s ease-out forwards;
+  }
+
+  @keyframes kozakDestroy {
+    0% { filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); transform: scale(1); }
+    20% { filter: drop-shadow(0 0 30px rgba(255,0,0,0.8)) brightness(2); transform: scale(1.05) rotate(-2deg); }
+    40% { filter: drop-shadow(0 0 40px rgba(255,100,0,0.9)) brightness(3); transform: scale(1.1) rotate(3deg); }
+    60% { filter: drop-shadow(0 0 50px rgba(255,200,0,1)) brightness(4); transform: scale(1.15); opacity: 1; }
+    100% { filter: drop-shadow(0 0 60px rgba(255,255,200,1)) brightness(5); transform: scale(1.3); opacity: 0; }
+  }
+
+  .kozak-svg-wrap.marching svg {
+    animation: kozakMarch 1s ease-in-out forwards;
+  }
+
+  @keyframes kozakMarch {
+    0% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(40px) translateY(-15px); }
+    50% { transform: translateX(100px) translateY(0); }
+    75% { transform: translateX(170px) translateY(-10px); opacity: 0.7; }
+    100% { transform: translateX(250px) translateY(0); opacity: 0; }
+  }
+
+  .particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  @keyframes particleFly {
+    0% { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+  }
+
+  .smoke {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(100,100,100,0.6), transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 8;
+    animation: smokeRise 2s ease-out forwards;
+  }
+
+  @keyframes smokeRise {
+    0% { transform: scale(0.5) translateY(0); opacity: 0.8; }
+    100% { transform: scale(2) translateY(-80px); opacity: 0; }
+  }
+
+  .completion-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .completion-overlay.show { display: flex; }
+
+  .completion-content {
+    text-align: center;
+    padding: 40px;
+    background: rgba(60,30,10,0.95);
+    border: 3px solid #B8860B;
+    border-radius: 15px;
+    max-width: 500px;
+  }
+
+  .completion-content h2 {
+    font-family: 'Ruslan Display', cursive;
+    font-size: 2em;
+    color: #ffcc66;
+    margin-bottom: 15px;
+  }
+
+  .completion-content p {
+    font-size: 1.2em;
+    color: #f0e6d3;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .completion-content .btn {
+    font-size: 1.2em;
+    padding: 12px 30px;
+  }
+
+  .tent {
+    position: fixed;
+    bottom: 0;
+    font-size: 4em;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .tent-left { left: 5%; }
+  .tent-right { right: 5%; }
+
+  @media (max-width: 900px) {
+    .main-layout { flex-direction: column; align-items: center; }
+    .participle-panel { min-width: 280px; order: 3; }
+    .spy-button-area { order: 2; padding-top: 10px; flex-direction: row; }
+    .kozak-area { order: 1; }
+    .header h1 { font-size: 1.6em; }
+    .current-verb { font-size: 1.8em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="tent tent-left"></div>
+<div class="tent tent-right">⛺</div>
+
+<div class="container">
+  <div class="header">
+    <h1>🛡 Шпионы в лагере Тараса Бульбы 🛡</h1>
+    <div class="subtitle">Разоблачи шпионов среди казаков!</div>
+  </div>
+
+  <div class="task-box">
+    Перед тобой <strong>казаки</strong> — глаголы. Определи их <strong>спряжение</strong>, <strong>переходность</strong> и <strong>вид</strong>,
+    поставь в форму <strong>3-го лица мн.ч.</strong> и образуй <strong>страдательное причастие настоящего времени</strong> (суффиксы -ЕМ- / -ИМ-).
+    Но среди них прячутся <strong style="color:#ff4444;">3 ШПИОНА</strong> — глаголы, от которых такое причастие образовать нельзя!
+  </div>
+
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="score-display" id="scoreDisplay">Казаков на посту: 0 / 9 · Шпионов разоблачено: 0 / 3</div>
+
+  <div class="game-section">
+    <div class="current-verb" id="currentVerb"></div>
+    <div class="verb-hint" id="verbHint">Определи свойства глагола и собери причастие</div>
+
+    <div class="main-layout">
+      <div class="participle-panel">
+        <h3>Страд. причастие</h3>
+        <div class="participle-display" id="participleDisplay">
+          <span class="part-stem" id="partStem">—</span>
+          <span class="part-suffix" id="partSuffix"></span>
+          <span class="part-ending" id="partEnding">ый</span>
+        </div>
+        <select id="suffixSelect">
+          <option value="">Выбери суффикс</option>
+          <option value="ем">-ЕМ-</option>
+          <option value="им">-ИМ-</option>
+          <option value="нет">НЕТ ФОРМЫ</option>
+        </select>
+      </div>
+
+      <div class="kozak-area">
+        <div class="kozak-svg-wrap" id="kozakWrap">
+          <svg viewBox="0 0 280 340" xmlns="http://www.w3.org/2000/svg" id="kozakSvg">
+            <ellipse cx="140" cy="330" rx="70" ry="10" fill="rgba(0,0,0,0.4)"/>
+            <path d="M 95 280 L 90 320 Q 90 330 100 330 L 120 330 Q 125 330 125 325 L 125 280 Z" fill="#3E2723" stroke="#1a0e08" stroke-width="2"/>
+            <path d="M 155 280 L 155 325 Q 155 330 160 330 L 180 330 Q 190 330 190 320 L 185 280 Z" fill="#3E2723" stroke="#1a0e08" stroke-width="2"/>
+            <rect x="92" y="270" width="32" height="15" rx="3" fill="#5D4037" stroke="#1a0e08" stroke-width="1.5"/>
+            <rect x="156" y="270" width="32" height="15" rx="3" fill="#5D4037" stroke="#1a0e08" stroke-width="1.5"/>
+            <path d="M 85 220 Q 80 250 90 275 L 130 275 L 130 220 Z" fill="#C62828" stroke="#7f0000" stroke-width="2"/>
+            <path d="M 150 220 L 150 275 L 190 275 Q 200 250 195 220 Z" fill="#C62828" stroke="#7f0000" stroke-width="2"/>
+            <line x1="107" y1="225" x2="110" y2="270" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+            <line x1="173" y1="225" x2="170" y2="270" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+            <rect x="80" y="210" width="120" height="18" rx="4" fill="#B8860B" stroke="#6B4F10" stroke-width="2"/>
+            <circle cx="140" cy="219" r="7" fill="#FFD54F" stroke="#6B4F10" stroke-width="1.5"/>
+            <path d="M 75 130 Q 70 170 75 215 L 205 215 Q 210 170 205 130 Q 180 120 140 120 Q 100 120 75 130 Z" fill="#1565C0" stroke="#0D47A1" stroke-width="2"/>
+            <line x1="140" y1="125" x2="140" y2="215" stroke="#0D47A1" stroke-width="2"/>
+            <circle cx="140" cy="145" r="3" fill="#FFD54F"/>
+            <circle cx="140" cy="165" r="3" fill="#FFD54F"/>
+            <circle cx="140" cy="185" r="3" fill="#FFD54F"/>
+            <circle cx="140" cy="205" r="3" fill="#FFD54F"/>
+            <path d="M 75 135 Q 50 160 55 200 Q 58 215 65 215 L 75 210 Q 72 180 80 150 Z" fill="#1565C0" stroke="#0D47A1" stroke-width="2"/>
+            <path d="M 205 135 Q 230 160 225 200 Q 222 215 215 215 L 205 210 Q 208 180 200 150 Z" fill="#1565C0" stroke="#0D47A1" stroke-width="2"/>
+            <circle cx="62" cy="212" r="8" fill="#FFCCBC" stroke="#BF360C" stroke-width="1.5"/>
+            <circle cx="218" cy="212" r="8" fill="#FFCCBC" stroke="#BF360C" stroke-width="1.5"/>
+            <path d="M 218 212 L 240 180 L 245 175" stroke="#B0BEC5" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <path d="M 240 180 L 260 155" stroke="#CFD8DC" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <circle cx="240" cy="180" r="4" fill="#FFD54F"/>
+            <rect x="125" y="100" width="30" height="25" rx="5" fill="#FFCCBC" stroke="#BF360C" stroke-width="1.5"/>
+            <ellipse cx="140" cy="80" rx="38" ry="42" fill="#FFCCBC" stroke="#BF360C" stroke-width="2"/>
+            <ellipse cx="102" cy="82" rx="7" ry="10" fill="#FFAB91" stroke="#BF360C" stroke-width="1.5"/>
+            <ellipse cx="178" cy="82" rx="7" ry="10" fill="#FFAB91" stroke="#BF360C" stroke-width="1.5"/>
+            <ellipse cx="125" cy="75" rx="5" ry="6" fill="white" stroke="#3E2723" stroke-width="1"/>
+            <ellipse cx="155" cy="75" rx="5" ry="6" fill="white" stroke="#3E2723" stroke-width="1"/>
+            <circle cx="126" cy="76" r="3" fill="#3E2723"/>
+            <circle cx="156" cy="76" r="3" fill="#3E2723"/>
+            <circle cx="127" cy="74" r="1" fill="white"/>
+            <circle cx="157" cy="74" r="1" fill="white"/>
+            <path d="M 115 65 Q 125 60 133 64" stroke="#3E2723" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 147 64 Q 155 60 165 65" stroke="#3E2723" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 140 78 L 137 90 Q 140 93 143 90 L 140 78" fill="#FFAB91" stroke="#BF360C" stroke-width="1"/>
+            <path d="M 120 95 Q 110 100 100 108 Q 105 103 115 100 Q 125 97 135 97" fill="#3E2723" stroke="#1a0e08" stroke-width="1"/>
+            <path d="M 160 95 Q 170 100 180 108 Q 175 103 165 100 Q 155 97 145 97" fill="#3E2723" stroke="#1a0e08" stroke-width="1"/>
+            <path d="M 133 102 Q 140 106 147 102" stroke="#BF360C" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M 100 55 Q 100 30 140 25 Q 180 30 180 55 L 180 62 Q 140 58 100 62 Z" fill="#B71C1C" stroke="#7f0000" stroke-width="2"/>
+            <ellipse cx="140" cy="28" rx="38" ry="8" fill="#8B0000" stroke="#5c0000" stroke-width="1.5"/>
+            <rect x="100" y="52" width="80" height="8" rx="2" fill="#FFD54F" stroke="#B8860B" stroke-width="1"/>
+            <path d="M 135 35 L 145 35 M 140 30 L 140 40" stroke="#FFD54F" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+
+          <div class="chest-selects">
+            <select id="aspectSelect">
+              <option value="">Вид?</option>
+              <option value="нсв">Несов. вид</option>
+              <option value="св">Сов. вид</option>
+            </select>
+            <select id="transSelect">
+              <option value="">Переходность?</option>
+              <option value="перех">Переходный</option>
+              <option value="неперех">Непереходный</option>
+            </select>
+            <select id="conjSelect">
+              <option value="">Спряжение?</option>
+              <option value="1">1-е спр.</option>
+              <option value="2">2-е спр.</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="kozak-inputs">
+          <div>
+            <input type="text" class="stem-input" id="stemInput" placeholder="основа" autocomplete="off" spellcheck="false">
+            <div class="input-label-row"><span class="stem-label">основа</span></div>
+          </div>
+          <span class="plus-sign">+</span>
+          <div>
+            <input type="text" class="ending-input" id="endingInput" placeholder="оконч." autocomplete="off" spellcheck="false">
+            <div class="input-label-row"><span class="ending-label">оконч. 3л. мн.ч.</span></div>
+          </div>
+          <span class="auto-postfix" id="autoPostfix">СЯ</span>
+        </div>
+      </div>
+
+      <div class="spy-button-area">
+        <button class="spy-btn" id="spyBtn" onclick="declareSpy()"> ШПИОН!</button>
+        <div class="spy-btn-label">Нажми сразу, если глагол — шпион</div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-check" id="checkBtn" onclick="checkAnswer()">✓ Отпустить на пост</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
+</div>
+
+<div class="completion-overlay" id="completionOverlay">
+  <div class="completion-content">
+    <h2>⚔ Лагерь очищен! ⚔</h2>
+    <p id="completionText"></p>
+    <button class="btn btn-check" onclick="restartGame()">Начать заново</button>
+  </div>
+</div>
+
+<script>
+const verbsData = [
+  {
+    verb: "Изучать",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "изучают",
+    stem: "изуча",
+    ending3p: "ют",
+    postfix: "",
+    suffix: "ем",
+    participle: "изучаемый"
+  },
+  {
+    verb: "Вычитать",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "вычитают",
+    stem: "вычита",
+    ending3p: "ют",
+    postfix: "",
+    suffix: "ем",
+    participle: "вычитаемый"
+  },
+  {
+    verb: "Складывать",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "складывают",
+    stem: "складыва",
+    ending3p: "ют",
+    postfix: "",
+    suffix: "ем",
+    participle: "складываемый"
+  },
+  {
+    verb: "Разрезать",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "разрезают",
+    stem: "разреза",
+    ending3p: "ют",
+    postfix: "",
+    suffix: "ем",
+    participle: "разрезаемый"
+  },
+  {
+    verb: "Составлять",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "составляют",
+    stem: "составля",
+    ending3p: "ют",
+    postfix: "",
+    suffix: "ем",
+    participle: "составляемый"
+  },
+  {
+    verb: "Оберегать",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "оберегают",
+    stem: "оберега",
+    ending3p: "ют",
+    postfix: "",
+    suffix: "ем",
+    participle: "оберегаемый"
+  },
+  {
+    verb: "Верить",
+    conjugation: "2",
+    transitivity: "неперех",
+    aspect: "нсв",
+    thirdPerson: "верят",
+    stem: "вер",
+    ending3p: "ят",
+    postfix: "",
+    suffix: "нет",
+    participle: "—",
+    spy: true,
+    spyReason: "непереходный глагол"
+  },
+  {
+    verb: "Привозить",
+    conjugation: "2",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "привозят",
+    stem: "привоз",
+    ending3p: "ят",
+    postfix: "",
+    suffix: "им",
+    participle: "привозимый"
+  },
+  {
+    verb: "Изучить",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "св",
+    thirdPerson: "изучат",
+    stem: "изуч",
+    ending3p: "ат",
+    postfix: "",
+    suffix: "нет",
+    participle: "—",
+    spy: true,
+    spyReason: "совершенный вид"
+  },
+  {
+    verb: "Приносить",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "приносят",
+    stem: "принос",
+    ending3p: "ут",
+    postfix: "",
+    suffix: "им",
+    participle: "приносимый"
+  },
+  {
+    verb: "Изучать",
+    conjugation: "1",
+    transitivity: "перех",
+    aspect: "нсв",
+    thirdPerson: "изучают",
+    stem: "изуча",
+    ending3p: "ют",
+    postfix: "",
+    suffix: "ем",
+    participle: "изучаемый"
+  },
+  {
+    verb: "Улыбаться",
+    conjugation: "1",
+    transitivity: "неперех",
+    aspect: "нсв",
+    thirdPerson: "улыбаются",
+    stem: "улыба",
+    ending3p: "ются",
+    postfix: "ся",
+    suffix: "нет",
+    participle: "—",
+    spy: true,
+    spyReason: "непереходный глагол"
+  }
+];
+
+let currentIndex = 0;
+let scoreKozaks = 0;
+let scoreSpies = 0;
+let completed = [];
+let animating = false;
+
+function init() {
+  currentIndex = 0;
+  scoreKozaks = 0;
+  scoreSpies = 0;
+  completed = [];
+  animating = false;
+  document.getElementById('completionOverlay').classList.remove('show');
+  renderProgress();
+  loadVerb();
+}
+
+function renderProgress() {
+  const bar = document.getElementById('progressBar');
+  bar.innerHTML = '';
+  verbsData.forEach((v, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    if (completed.includes(i)) {
+      dot.classList.add(v.spy ? 'spy-done' : 'done');
+      dot.textContent = v.spy ? '' : '✓';
+    } else if (i === currentIndex) {
+      dot.classList.add('current');
+      dot.textContent = i + 1;
+    } else {
+      dot.textContent = i + 1;
+    }
+    bar.appendChild(dot);
+  });
+  document.getElementById('scoreDisplay').textContent =
+    `Казаков на посту: ${scoreKozaks} / 9 · Шпионов разоблачено: ${scoreSpies} / 3`;
+}
+
+function loadVerb() {
+  if (currentIndex >= verbsData.length) {
+    showCompletion();
+    return;
+  }
+
+  const v = verbsData[currentIndex];
+  document.getElementById('currentVerb').textContent = v.verb.toUpperCase();
+
+  document.getElementById('aspectSelect').value = '';
+  document.getElementById('transSelect').value = '';
+  document.getElementById('conjSelect').value = '';
+  document.getElementById('stemInput').value = '';
+  document.getElementById('endingInput').value = '';
+  document.getElementById('suffixSelect').value = '';
+
+  document.getElementById('partStem').textContent = '—';
+  document.getElementById('partSuffix').textContent = '';
+  document.getElementById('partEnding').textContent = 'ый';
+
+  ['aspectSelect','transSelect','conjSelect'].forEach(id => {
+    document.getElementById(id).className = '';
+  });
+  ['stemInput','endingInput'].forEach(id => {
+    document.getElementById(id).className = id.includes('stem') ? 'stem-input' : 'ending-input';
+  });
+  document.getElementById('suffixSelect').className = '';
+
+  const postfixEl = document.getElementById('autoPostfix');
+  if (v.postfix) {
+    postfixEl.textContent = v.postfix.toUpperCase();
+    postfixEl.classList.add('visible');
+  } else {
+    postfixEl.classList.remove('visible');
+  }
+
+  const wrap = document.getElementById('kozakWrap');
+  wrap.classList.remove('destroying', 'marching');
+  wrap.style.opacity = '1';
+  wrap.style.transform = '';
+  wrap.querySelectorAll('.particle, .smoke').forEach(el => el.remove());
+
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('checkBtn').disabled = false;
+  document.getElementById('spyBtn').disabled = false;
+  document.getElementById('verbHint').textContent = 'Определи свойства глагола и собери причастие';
+
+  animating = false;
+  renderProgress();
+}
+
+document.getElementById('stemInput').addEventListener('input', function() {
+  document.getElementById('partStem').textContent = this.value.toUpperCase() || '—';
+});
+
+document.getElementById('suffixSelect').addEventListener('change', function() {
+  const suffixEl = document.getElementById('partSuffix');
+  const endingEl = document.getElementById('partEnding');
+  if (this.value === 'нет') {
+    suffixEl.textContent = '';
+    endingEl.textContent = '';
+  } else if (this.value) {
+    suffixEl.textContent = this.value.toUpperCase();
+    endingEl.textContent = 'ый';
+  } else {
+    suffixEl.textContent = '';
+    endingEl.textContent = 'ый';
+  }
+});
+
+function clearErrors() {
+  ['aspectSelect','transSelect','conjSelect'].forEach(id => {
+    document.getElementById(id).classList.remove('wrong-select');
+  });
+  ['stemInput','endingInput'].forEach(id => {
+    document.getElementById(id).classList.remove('wrong-input');
+  });
+  document.getElementById('suffixSelect').classList.remove('wrong-select');
+}
+
+function markWrong(ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (id.includes('Select')) {
+      el.classList.add('wrong-select');
+      setTimeout(() => el.classList.remove('wrong-select'), 600);
+    } else {
+      el.classList.add('wrong-input');
+      setTimeout(() => el.classList.remove('wrong-input'), 600);
+    }
+  });
+}
+
+function markCorrect(ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (id.includes('Select')) el.classList.add('correct-select');
+    else el.classList.add('correct-input');
+  });
+}
+
+function checkAnswer() {
+  if (animating) return;
+  const v = verbsData[currentIndex];
+  clearErrors();
+
+  const aspect = document.getElementById('aspectSelect').value;
+  const trans = document.getElementById('transSelect').value;
+  const conj = document.getElementById('conjSelect').value;
+  const stem = document.getElementById('stemInput').value.trim().toLowerCase();
+  const ending = document.getElementById('endingInput').value.trim().toLowerCase();
+  const suffix = document.getElementById('suffixSelect').value;
+
+  const feedback = document.getElementById('feedback');
+  let errors = [];
+  let wrongFields = [];
+
+  if (aspect !== v.aspect) { errors.push('вид'); wrongFields.push('aspectSelect'); }
+  if (trans !== v.transitivity) { errors.push('переходность'); wrongFields.push('transSelect'); }
+  if (conj !== v.conjugation) { errors.push('спряжение'); wrongFields.push('conjSelect'); }
+  if (stem !== v.stem) { errors.push('основу'); wrongFields.push('stemInput'); }
+  if (ending !== v.ending3p) { errors.push(`окончание «${v.ending3p}» (они ${v.thirdPerson})`); wrongFields.push('endingInput'); }
+
+  if (v.spy) {
+    if (suffix !== 'нет') {
+      errors.push('суффикс — выбери «НЕТ ФОРМЫ»');
+      wrongFields.push('suffixSelect');
+    }
+  } else {
+    if (suffix !== v.suffix) {
+      errors.push(`суффикс -${v.suffix.toUpperCase()}-`);
+      wrongFields.push('suffixSelect');
+    }
+  }
+
+  if (errors.length > 0) {
+    markWrong(wrongFields);
+    feedback.className = 'feedback error';
+    feedback.innerHTML = 'Ошибка: проверь ' + errors.join(', ') + '!';
+    return;
+  }
+
+  if (v.spy) {
+    feedback.className = 'feedback spy-caught';
+    feedback.innerHTML = `🚨 ШПИОН РАЗОБЛАЧЁН! «${v.verb}» — ${v.spyReason}! Страдательное причастие настоящего времени от него не образуется!`;
+    animating = true;
+    document.getElementById('checkBtn').disabled = true;
+    document.getElementById('spyBtn').disabled = true;
+    markCorrect(['aspectSelect','transSelect','conjSelect','stemInput','endingInput','suffixSelect']);
+    destroyKozak(() => {
+      scoreSpies++;
+      completed.push(currentIndex);
+      currentIndex++;
+      setTimeout(() => { renderProgress(); loadVerb(); }, 400);
+    });
+  } else {
+    feedback.className = 'feedback success';
+    feedback.innerHTML = `✓ Казак «${v.verb}» отправлен на пост! Причастие: <strong>${v.participle.toUpperCase()}</strong>`;
+    animating = true;
+    document.getElementById('checkBtn').disabled = true;
+    document.getElementById('spyBtn').disabled = true;
+    markCorrect(['aspectSelect','transSelect','conjSelect','stemInput','endingInput','suffixSelect']);
+    marchKozak(() => {
+      scoreKozaks++;
+      completed.push(currentIndex);
+      currentIndex++;
+      setTimeout(() => { renderProgress(); loadVerb(); }, 400);
+    });
+  }
+}
+
+function declareSpy() {
+  if (animating) return;
+  const v = verbsData[currentIndex];
+  clearErrors();
+
+  const feedback = document.getElementById('feedback');
+
+  // Проверяем, шпион ли это
+  if (!v.spy) {
+    // Ложная тревога
+    markWrong(['aspectSelect','transSelect','conjSelect']);
+    feedback.className = 'feedback error';
+    feedback.innerHTML = `🚫 Ложная тревога! «${v.verb}» — не шпион. Это обычный казак — ${v.aspect === 'нсв' ? 'несовершенный' : 'совершенный'} вид, ${v.transitivity === 'перех' ? 'переходный' : 'непереходный'} глагол. Заполни все поля и отправь казака на пост!`;
+    return;
+  }
+
+  // Настоящий шпион!
+  feedback.className = 'feedback spy-caught';
+  feedback.innerHTML = `🚨 ШПИОН РАЗОБЛАЧЁН! «${v.verb}» — ${v.spyReason}! Страдательное причастие настоящего времени от него не образуется!`;
+  animating = true;
+  document.getElementById('checkBtn').disabled = true;
+  document.getElementById('spyBtn').disabled = true;
+  destroyKozak(() => {
+    scoreSpies++;
+    completed.push(currentIndex);
+    currentIndex++;
+    setTimeout(() => { renderProgress(); loadVerb(); }, 400);
+  });
+}
+
+function destroyKozak(callback) {
+  const wrap = document.getElementById('kozakWrap');
+  wrap.classList.add('destroying');
+
+  const rect = wrap.getBoundingClientRect();
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+
+  const colors = ['#ff4444', '#ff8800', '#ffcc00', '#ff2200', '#ffaa00', '#8B0000'];
+
+  for (let i = 0; i < 30; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    const angle = (Math.PI * 2 * i) / 30;
+    const distance = 80 + Math.random() * 120;
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance - 30;
+    particle.style.setProperty('--dx', dx + 'px');
+    particle.style.setProperty('--dy', dy + 'px');
+    particle.style.left = centerX + 'px';
+    particle.style.top = centerY + 'px';
+    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.width = (4 + Math.random() * 8) + 'px';
+    particle.style.height = particle.style.width;
+    particle.style.animation = `particleFly ${0.8 + Math.random() * 0.8}s ease-out forwards`;
+    particle.style.animationDelay = (Math.random() * 0.2) + 's';
+    wrap.appendChild(particle);
+  }
+
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const smoke = document.createElement('div');
+      smoke.className = 'smoke';
+      smoke.style.left = (centerX - 30 + (Math.random() - 0.5) * 60) + 'px';
+      smoke.style.top = (centerY - 30 + (Math.random() - 0.5) * 60) + 'px';
+      wrap.appendChild(smoke);
+      setTimeout(() => smoke.remove(), 2000);
+    }, i * 200);
+  }
+
+  setTimeout(() => {
+    wrap.querySelectorAll('.particle').forEach(p => p.remove());
+    callback();
+  }, 1600);
+}
+
+function marchKozak(callback) {
+  const wrap = document.getElementById('kozakWrap');
+  wrap.classList.add('marching');
+  setTimeout(callback, 1000);
+}
+
+function showCompletion() {
+  const overlay = document.getElementById('completionOverlay');
+  const text = document.getElementById('completionText');
+  text.innerHTML =
+    `Все <strong>9 казаков</strong> отправлены на свои посты!<br>` +
+    `Все <strong>3 шпиона</strong> разоблачены!<br><br>` +
+    `Тарас Бульба доволен тобой, юный грамотей! `;
+  overlay.classList.add('show');
+}
+
+function restartGame() { init(); }
+
+init();
+</script>
+
+</body>
+</html>
